@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Eneario</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <p:growl showDetail="true">
+            <h:form>
+
+                <h3 style="margin-top:0">Estructuras de datos</h3>
+                <p:accordionPanel>
+                    <p:tab title="Arbol Binario">
+
+                        <p:panel header="Diverti2">
+                            <p:panelGrid columns="5">
+                                <p:commandButton value="Ingresar visitante" action="#{arbolControlador.verIngresar}" update="@all"/>
+                                <p:commandButton value="Ver visitantes" action="#{arbolControlador.mostrarVisitantes()}" update="@all"/>
+                                <p:commandButton value="Realizar encuesta" action="#{arbolControlador.mostrarEncuesta()}" update="@all"/>
+                                <p:commandButton value="Reportes" action="#{arbolControlador.mostrarReportes()}" update="@all"/>
+                            </p:panelGrid>                
+                        </p:panel>
+
+                        <p:panel header="Ingresar visitante" rendered="#{arbolControlador.verIngresar}">
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="Nombre: "/>
+                                <p:inputText value="#{arbolControlador.objVisitante.nombre}"/>
+                                <p:outputLabel value="Pais: " />
+                                <p:selectOneMenu value="#{arbolControlador.selectedItem}" style="width:210px">
+                                    <f:selectItems value="#{arbolControlador.listaPaises}"/>
+                                </p:selectOneMenu>   
+                                <p:commandButton value="Ingresar" action="#{arbolControlador.insertarVisitante()}" update="@all"/>
+                                <p:commandButton value="Cancelar" action="#{arbolControlador.ocultarIngresar()}" update="@all"/>
+                            </p:panelGrid>                
+
+                        </p:panel>  
+
+                        <h:panelGroup rendered="#{arbolControlador.verVisitantes}">
+                            <p:dataTable value="#{arbolControlador.arrayVisitante}" var="vis">
+                                <f:facet name="header">
+                                    Visitantes
+                                </f:facet>
+
+                                <p:column headerText="ID">
+                                    <h:outputText value="#{vis.idVisitante}" />
+                                </p:column>
+
+                                <p:column headerText="Nombre">
+                                    <h:outputText value="#{vis.nombre}" />
+                                </p:column>
+
+                                <p:column headerText="Pais de procedencia">
+                                    <h:outputText value="#{vis.pais.nombre}" />
+                                </p:column>
+
+                                <p:column headerText="Nombre corto del pais">
+                                    <h:outputText value="#{vis.pais.nombreCorto}" />
+                                </p:column>
+
+                                <f:facet name="footer">
+                                    --Visitantes DIVERTI2--
+                                </f:facet>
+                            </p:dataTable>
+
+                            <p:commandButton value="Cancelar" action="#{arbolControlador.ocultarVisitantes()}" update="@all"/>
+                        </h:panelGroup>
+
+                        <p:panel header="Encuesta" rendered="#{arbolControlador.verEncuestas}">
+                            <h:panelGrid columns="2">
+                                <p:outputLabel value="Ingrese su ID "/>
+                                <p:inputText value="#{arbolControlador.buscarVisitante}" required="true"/>
+                                <p:outputLabel value="Seleccione la atraccion/servicio: "/>
+                                <p:selectOneMenu value="#{arbolControlador.selectedItemAtraccion}" style="width:210px">
+                                    <f:selectItems value="#{arbolControlador.listaAtracciones}"/>
+                                </p:selectOneMenu>   
+                                <p:commandButton value="Ingresar datos" action="#{arbolControlador.ingresarDatos()}" update="@all"/>
+                                <p:commandButton value="Cancelar" action="#{arbolControlador.ocultarEncuesta()}" update="@all"/>
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <p:panel header="##{arbolControlador.selectedItemAtraccion}" rendered="#{arbolControlador.verPanelEncuestas}">
+
+                            <h:panelGroup rendered="#{arbolControlador.renderedCiclon}">
+                                <p:outputPanel deferred="true">
+                                    <h3>PREGUNTA 1</h3>
+                                    <p>1- Muy insatisfecho.
+                                        2- Insatisfecho.
+                                        3- Pudo ser mejor.
+                                        4- Bueno.
+                                        5- Excelente.</p>
+                                </p:outputPanel>
+                                <p:panelGrid columns="2">
+                                    <p:outputLabel value="#{arbolControlador.listaPreguntasCiclon.get(0)}"/>
+                                    <p:selectOneRadio value="#{arbolControlador.respSelected}">
+                                        <f:selectItems value="#{arbolControlador.respuestasLargas}"/>
+                                    </p:selectOneRadio>
+                                </p:panelGrid>
+
+                                <p:outputPanel deferred="true">
+                                    <h3>PREGUNTA 2</h3>
+                                    <p>1- Si.
+                                        2- Tal vez.
+                                        3- No.</p>
+                                </p:outputPanel>
+                                <p:panelGrid columns="2">
+                                    <p:outputLabel value="#{arbolControlador.listaPreguntasCiclon.get(1)}"/>
+                                    <p:selectOneRadio value="#{arbolControlador.respSelectedDos}">
+                                        <f:selectItems value="#{arbolControlador.respuestasCortas}"/>
+                                    </p:selectOneRadio>
+                                </p:panelGrid>
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{arbolControlador.renderedHulk}">
+                                <p:outputPanel deferred="true">
+                                    <h3>PREGUNTA 1</h3>
+                                    <p>1- Muy insatisfecho.
+                                        2- Insatisfecho.
+                                        3- Pudo ser mejor.
+                                        4- Bueno.
+                                        5- Excelente.</p>
+                                </p:outputPanel>
+                                <p:panelGrid columns="2">
+                                    <p:outputLabel value="#{arbolControlador.listaPreguntasHulk.get(0)}"/>
+                                    <p:selectOneRadio value="#{arbolControlador.respSelected}">
+                                        <f:selectItems value="#{arbolControlador.respuestasLargas}"/>
+                                    </p:selectOneRadio>
+                                </p:panelGrid>
+
+                                <p:outputPanel deferred="true">
+                                    <h3>PREGUNTA 2</h3>
+                                    <p>1- Si.
+                                        2- Tal vez.
+                                        3- No.</p>
+                                </p:outputPanel>
+                                <p:panelGrid columns="2">
+                                    <p:outputLabel value="#{arbolControlador.listaPreguntasHulk.get(1)}"/>
+                                    <p:selectOneRadio value="#{arbolControlador.respSelectedDos}">
+                                        <f:selectItems value="#{arbolControlador.respuestasCortas}"/>
+                                    </p:selectOneRadio>
+                                </p:panelGrid>
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{arbolControlador.renderedComida}">
+                                <p:outputPanel deferred="true">
+                                    <h3>PREGUNTA 1</h3>
+                                    <p>1- Muy insatisfecho.
+                                        2- Insatisfecho.
+                                        3- Pudo ser mejor.
+                                        4- Bueno.
+                                        5- Excelente.</p>
+                                </p:outputPanel>
+                                <p:panelGrid columns="2">
+                                    <p:outputLabel value="#{arbolControlador.listaPreguntaComida.get(0)}"/>
+                                    <p:selectOneRadio value="#{arbolControlador.respSelected}">
+                                        <f:selectItems value="#{arbolControlador.respuestasLargas}"/>
+                                    </p:selectOneRadio>
+                                </p:panelGrid>
+
+                            </h:panelGroup>
+
+                            <p:commandButton value="Enviar" action="#{arbolControlador.responderPregunta()}" update="@all"/>
+                            <p:commandButton value="Cancelar" action="#{arbolControlador.ocultarPanelEncuesta()}" update="@all"/>
+
+                        </p:panel>
+
+                        <p:panel header="Reportes" rendered="#{arbolControlador.verReporte}">
+                            <h:panelGrid columns="4">
+                                <p:outputLabel value="Seleccione la atraccion/servicio: "/>
+                                <p:selectOneMenu value="#{arbolControlador.selectedItemAtraccionReporte}" style="width:210px">
+                                    <f:selectItems value="#{arbolControlador.listaAtracciones}"/>
+                                </p:selectOneMenu>   
+                                <p:commandButton value="Ingresar datos" action="#{arbolControlador.consultarReporte()}" update="@all"/>
+                                <p:commandButton value="Cancelar" action="#{arbolControlador.ocultarReportes()}" update="@all"/>
+                            </h:panelGrid>
+
+                            <h:panelGroup rendered="#{arbolControlador.renderedCiclonReporte}">
+                                <p:panelGrid columns="2">
+                                    <p:outputLabel value="#{arbolControlador.listaPreguntasCiclon.get(0)}"/>
+                                    <p:commandButton value="Pregunta 1 de #{arbolControlador.selectedItemAtraccionReporte}" type="button" onclick="PF('cicUno').show();" update="@all"/>
+                                </p:panelGrid>
+
+                                <p:dialog header="Respuestas pregunta 1 CICLON" widgetVar="cicUno" modal="true">
+                                    <h:outputText value="#{arbolControlador.contarPregUnoCiclon()}"/>
+                                </p:dialog>   
+
+                                <p:panelGrid columns="2">
+                                    <p:outputLabel value="#{arbolControlador.listaPreguntasCiclon.get(1)}"/>
+                                    <p:commandButton value="Pregunta 2 de #{arbolControlador.selectedItemAtraccionReporte}" type="button" onclick="PF('cicDos').show();" update="@all"/>
+                                </p:panelGrid>
+
+                                <p:dialog header="Respuestas pregunta 2 CICLON" widgetVar="cicDos" modal="true">
+                                    <h:outputText value="#{arbolControlador.contarPregDosCiclon()}"/>
+                                </p:dialog>   
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{arbolControlador.renderedHulkReporte}">
+                                <p:panelGrid columns="2">
+                                    <p:outputLabel value="#{arbolControlador.listaPreguntasHulk.get(0)}"/>
+                                    <p:commandButton value="Pregunta 1 de #{arbolControlador.selectedItemAtraccionReporte}" type="button" onclick="PF('hukUno').show();" update="@all"/>
+                                </p:panelGrid>
+
+                                <p:dialog header="Respuestas pregunta 1 HULK" widgetVar="hukUno" modal="true">
+                                    <h:outputText value="#{arbolControlador.contarPregUnoHulk()}"/>
+                                </p:dialog>   
+
+                                <p:panelGrid columns="2">
+                                    <p:outputLabel value="#{arbolControlador.listaPreguntasHulk.get(1)}"/>
+                                    <p:commandButton value="Pregunta 1 de #{arbolControlador.selectedItemAtraccionReporte}" type="button" onclick="PF('hukDos').show();" update="@all"/>
+                                </p:panelGrid>
+
+                                <p:dialog header="Respuestas pregunta 2 HULK" widgetVar="hukDos" modal="true">
+                                    <h:outputText value="#{arbolControlador.contarPregDosHulk()}"/>
+                                </p:dialog>   
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{arbolControlador.renderedComidaReporte}">
+                                <p:panelGrid columns="2">
+                                    <p:outputLabel value="#{arbolControlador.listaPreguntaComida.get(0)}"/>
+                                    <p:commandButton value="Pregunta 1 de #{arbolControlador.selectedItemAtraccionReporte}" type="button" onclick="PF('com').show();" update="@all"/>
+                                </p:panelGrid>
+
+                                <p:dialog header="Respuestas pregunta 2 HULK" widgetVar="com" modal="true">
+                                    <h:outputText value="#{arbolControlador.contarPregComida()}"/>
+                                </p:dialog>   
+
+                            </h:panelGroup>
+                        </p:panel>
+
+
+                    </p:tab>
+                    <p:tab title="Arbol Eneario">
+
+                        <p:panel header="Diverti2">
+                            <p:commandButton value="Recorrer arbol" action="#{arbolEnearioControlador.recorrerArbol()}" update="@all"/>
+                            <p:commandButton value="Ingresar visitante" action="#{arbolEnearioControlador.mostrarVisitantes()}" update="@all"/>
+                            <p:commandButton value="Responder encuesta" action="#{arbolEnearioControlador.mostrarEncuesta()}" update="@all"/>
+                            <p:commandButton value="Ver visitantes" action="#{arbolEnearioControlador.mostrarDataTable()}" update="@all"/>
+                            <p:panel header="Visitante" rendered="#{arbolEnearioControlador.renderedVisitantes}">
+                                <p:panelGrid columns="3">
+                                    <p:outputLabel value="Seleccione pais: "/>
+                                    <p:selectOneMenu value="#{arbolEnearioControlador.paisSeleccionado}" style="width:210px">
+                                        <f:selectItems value="#{arbolEnearioControlador.listaPaises}"/>
+                                    </p:selectOneMenu>  
+                                    <p:commandButton value="Ingresar pais" action="#{arbolEnearioControlador.determinarCiudad()}" update="@all"/>
+
+                                    <p:outputLabel value="Seleccione ciudad: "/>
+                                    <p:selectOneMenu value="#{arbolEnearioControlador.ciudadSeleccionada}" style="width:210px">
+                                        <f:selectItems value="#{arbolEnearioControlador.listaCiudades}"/>
+                                    </p:selectOneMenu>  
+                                    <p:commandButton value="Ingresar ciudad" action="#{arbolEnearioControlador.determinarAtraccion()}" update="@all"/>
+
+                                    <p:outputLabel value="Seleccione atraccion: "/>
+                                    <p:selectOneMenu value="#{arbolEnearioControlador.atraccionSeleccionada}" style="width:210px">
+                                        <f:selectItems value="#{arbolEnearioControlador.listaAtracciones}"/>
+                                    </p:selectOneMenu>  
+                                    <p:outputLabel value="" />
+
+                                    <p:outputLabel value="Seleccione mes: "/>
+                                    <p:selectOneMenu value="#{arbolEnearioControlador.mesSeleccionado}" style="width:210px">
+                                        <f:selectItems value="#{arbolEnearioControlador.listaMeses}"/>
+                                    </p:selectOneMenu>  
+                                    <p:commandButton value="Ingresar mes" action="#{arbolEnearioControlador.ingresarMes()}" update="@all"/>
+
+                                    <p:outputLabel value="Nombre: "/>
+                                    <p:inputText value="#{arbolEnearioControlador.visitanteNuevo.descripcion}"/>
+                                </p:panelGrid>  
+                                <p:commandButton value="Ingresar" action="#{arbolEnearioControlador.ingresarVisitante()}" update="@all"/>
+                                <p:commandButton value="Cancelar" action="#{arbolEnearioControlador.ocultarVisitantes()}" update="@all"/>
+
+                            </p:panel>  
+
+                            <p:panel header="Encuesta" rendered="#{arbolEnearioControlador.renderedEncuesta}">
+                                <p:selectOneMenu value="#{arbolEnearioControlador.visitanteSeleccionado}" style="width:210px">
+                                    <f:selectItems value="#{arbolEnearioControlador.listaVisitantes}"/>
+                                </p:selectOneMenu> 
+                                <p:panelGrid columns="2">
+                                    <p:outputPanel deferred="true">
+                                        <h3>PREGUNTA 1</h3>
+                                        <p>Cumplio sus expectativas?</p>
+                                    </p:outputPanel>
+                                    <p:selectOneRadio value="#{arbolEnearioControlador.respuestaVisitante1}">
+                                        <f:selectItems value="#{arbolEnearioControlador.respuestas}"/>
+                                    </p:selectOneRadio>
+
+                                    <p:outputPanel deferred="true">
+                                        <h3>PREGUNTA 2</h3>
+                                        <p>La recomendaria?</p>
+                                    </p:outputPanel>
+                                    <p:selectOneRadio value="#{arbolEnearioControlador.respuestaVisitante2}">
+                                        <f:selectItems value="#{arbolEnearioControlador.respuestas}"/>
+                                    </p:selectOneRadio>
+
+                                    <p:outputPanel deferred="true">
+                                        <h3>PREGUNTA 3</h3>
+                                        <p>Las sensaciones generaron impacto y adrenalina?</p>
+                                    </p:outputPanel>
+                                    <p:selectOneRadio value="#{arbolEnearioControlador.respuestaVisitante3}">
+                                        <f:selectItems value="#{arbolEnearioControlador.respuestas}"/>
+                                    </p:selectOneRadio>
+
+                                    <p:outputPanel deferred="true">
+                                        <h3>PREGUNTA 4</h3>
+                                        <p>Subiria de nuevo?</p>
+                                    </p:outputPanel>
+                                    <p:selectOneRadio value="#{arbolEnearioControlador.respuestaVisitante4}">
+                                        <f:selectItems value="#{arbolEnearioControlador.respuestas}"/>
+                                    </p:selectOneRadio>
+
+                                    <p:outputPanel deferred="true">
+                                        <h3>PREGUNTA 5</h3>
+                                        <p>Valorar por favor servicios de comida?</p>
+                                    </p:outputPanel>
+                                    <p:selectOneRadio value="#{arbolEnearioControlador.respuestaVisitante5}">
+                                        <f:selectItems value="#{arbolEnearioControlador.respuestas}"/>
+                                    </p:selectOneRadio>
+
+                                    <p:commandButton value="Responder" action="#{arbolEnearioControlador.responderPregunta()}" update="@all"/>
+                                    <p:commandButton value="Cancelar" action="#{arbolEnearioControlador.ocultarEncuesta()}" update="@all"/>
+                                </p:panelGrid>
+                            </p:panel>
+
+                        </p:panel>
+
+                        <h:panelGroup rendered="#{arbolEnearioControlador.renderedDataTable}">
+                            <p:dataTable value="#{arbolEnearioControlador.listaVisitantes}" var="vis">
+                                <f:facet name="header">
+                                    Visitantes
+                                </f:facet>
+
+                                <p:column headerText="ID">
+                                    <h:outputText value="#{vis.id}" />
+                                </p:column>
+
+                                <p:column headerText="Nombre">
+                                    <h:outputText value="#{vis.descripcion}" />
+                                </p:column>
+
+                                <f:facet name="footer">
+                                    --Visitantes DIVERTI2 Eneario--
+                                </f:facet>
+                            </p:dataTable>
+                            <p:commandButton value="Ocultar" action="#{arbolEnearioControlador.ocultarDataTable()}" update="@all"/>
+                        </h:panelGroup>
+
+                    </p:tab>
+                </p:accordionPanel>
+
+            </h:form>
+        </p:growl>
+    </h:body>
+</html>
